@@ -2,6 +2,7 @@ package ru.venidiktov.controller;
 
 import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,7 @@ public class WeatherController {
             @RequestParam("longitude") double longitude,
             @RequestParam("latitude") double latitude) throws InterruptedException {
         log.info(String.format("Входящий запрос температуры с параметрами: longitude = %s, latitude = %s", longitude, latitude));
-//        TimeUnit.SECONDS.sleep(10); // Эмуляция долгой работы сервиса
+        TimeUnit.SECONDS.sleep(10); // Эмуляция долгой работы сервиса
         return ResponseEntity.ok(new WeatherRs(LocalDateTime.now(), random.nextInt() + ""));
     }
 }
