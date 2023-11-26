@@ -1,5 +1,6 @@
 package ru.venidiktov.weather.client;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +23,21 @@ public interface ExternalWeatherApi {
      * вызвав котоырй мы обратися к внешнему сервису (Конкретно в нашем случае к контроллеру WeatherController из externalWeatherSource модуля)
      */
     @GetMapping
+    @CircuitBreaker(name = "weather-breaker")
+    // Подключаем Circuit Breaker
     WeatherRs getWeather(
+            @RequestParam(name = "longitude") double longitude,
+            @RequestParam(name = "latitude") double latitude
+    );
+
+    /**
+     * Идем на эндпоинт внешнего сервиса который всегда отдает 400
+     * что бы проверить работу Circuit Breaker
+     */
+    @GetMapping(path = "/error")
+    @CircuitBreaker(name = "weather-breaker")
+    // Подключаем Circuit Breaker
+    WeatherRs getWeatherWithExternalServiceError(
             @RequestParam(name = "longitude") double longitude,
             @RequestParam(name = "latitude") double latitude
     );

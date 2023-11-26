@@ -31,4 +31,10 @@ public class WeatherController {
         log.info("Входящий запрос температуры, запрос: " + request);
         return weatherFacade.getWeather(request);
     }
+
+    @PostMapping("error")
+    public WeatherRs getWeatherWithExternalServiceError(@RequestBody final WeatherRq request) {
+        log.info("Входящий запрос температуры, запрос: " + request);
+        return weatherFacade.getWeatherWithExternalServiceError(request);
+    }
 }

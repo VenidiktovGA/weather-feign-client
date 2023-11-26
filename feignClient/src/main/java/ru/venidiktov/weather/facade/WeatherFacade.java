@@ -32,4 +32,20 @@ public class WeatherFacade {
                         externalWeatherApi.getWeather(longitude, latitude)
                 ).map(rs -> new WeatherRs(rs.date(), rs.temperature())).orElse(WeatherRs.empty()); // TODO: 11/24/2023 Можно конечно тут кинуть exception и в ExceptionHandler его обработать!
     }
+
+    public WeatherRs getWeatherWithExternalServiceError(WeatherRq request) {
+        log.info("Поиск температуры в сервисе по параметрам: " + request);
+        return weatherService.getWeather(request.longitude(), request.latitude(), request.date())
+                .map(weatherModel ->
+                        new WeatherRs(weatherModel.date(), weatherModel.temperature() + weatherModel.type().toString())
+                ).orElseGet(() -> getExternalWeatherApiWithExternalServiceError(request.longitude(), request.latitude()));
+    }
+
+    private WeatherRs getExternalWeatherApiWithExternalServiceError(Double longitude, Double latitude) {
+        log.info(String.format("Запрос температуры во внешний сервис с параметрами: longitude = %s, latitude = %s", longitude, latitude));
+        return
+                Optional.ofNullable(
+                        externalWeatherApi.getWeatherWithExternalServiceError(longitude, latitude)
+                ).map(rs -> new WeatherRs(rs.date(), rs.temperature())).orElse(WeatherRs.empty()); // TODO: 11/24/2023 Можно конечно тут кинуть exception и в ExceptionHandler его обработать!
+    }
 }
