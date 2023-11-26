@@ -1,6 +1,7 @@
 package ru.venidiktov.weather.client;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +36,8 @@ public interface ExternalWeatherApi {
      * что бы проверить работу Circuit Breaker
      */
     @GetMapping(path = "/error")
+    @Retry(name = "weather-retry")
+    // Подключаем Retry, повторные запросы не будут видны в логах текущего приложения только конечный
     @CircuitBreaker(name = "weather-breaker")
     // Подключаем Circuit Breaker
     WeatherRs getWeatherWithExternalServiceError(
